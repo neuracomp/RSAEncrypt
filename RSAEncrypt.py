@@ -26,8 +26,8 @@ def decrypt_message(encrypted_message, private_key_str):
     return decrypted.decode()
 
 # Function to generate RSA keys
-def generate_rsa_keys():
-    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+def generate_rsa_keys(key_size):
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=key_size)
     public_key = private_key.public_key()
     pem_private_key = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
@@ -66,8 +66,9 @@ option = st.sidebar.selectbox("Choose an option", ["Generate Keys", "Encrypt Mes
 
 if option == "Generate Keys":
     st.header("Generate RSA Keys")
+    key_size = st.select_slider("Select Key Size (bits)", options=[2048, 3072, 4096, 8192, 12288, 16384, 24576, 32768], value=2048)
     if st.button("Generate Keys"):
-        private_key, public_key = generate_rsa_keys()
+        private_key, public_key = generate_rsa_keys(key_size)
         public_key_one_line = public_key.decode().replace("\n", "").replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "")
         private_key_one_line = private_key.decode().replace("\n", "").replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "")
         st.text_area("Private Key", private_key_one_line)
